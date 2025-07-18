@@ -1,0 +1,27 @@
+{
+  "name": "challenge7-nodejs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JamesBampton/Challenge7-NodeJS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JamesBampton/Challenge7-NodeJS/issues"
+  },
+  "homepage": "https://github.com/JamesBampton/Challenge7-NodeJS#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2",
+    "mysql2": "^3.14.2",
+    "uuid": "^11.1.0",
+    "uuidv4": "^6.2.13"
+  }
+}
