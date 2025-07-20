@@ -31,12 +31,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const li = document.createElement("li");
         li.textContent = item.id + ": " + JSON.stringify(item);
-        dataList.appendChild(li);
+      
       
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.checked = item.checked || false; // Use backend value if it exists
-      dataList.appendChild(checkbox);
+
+      li.appendChild(checkbox); // Append checkbox to list item
+      dataList.appendChild(li); // Now append list item
       
     });
     } catch (error) {
@@ -45,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Handle form submission to ADD new data
-  dataAdd.addEventListener("add", async (event) => {
+  dataForm.addEventListener("submit", async (event) => {
     event.preventDefault(); // prevents relaod of page on form submit
     const newData = { text: dataInput.value }; //Creates object of he new inputted data
 
@@ -56,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(newData),
 
       });
+      console.log(response)
 
       if (response.ok) {
         dataInput.value = ""; // Clear input field
@@ -90,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // Handle form submission to DELETE data
-  dataAdd.addEventListener("add", async (event) => {
+  dataAdd.addEventListener("submit", async (event) => {
   event.preventDefault();
   const newData = { text: dataInput.value.trim() };
   if (!newData) return;
