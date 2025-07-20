@@ -6,11 +6,11 @@ const { v4: uuidv4 } = require("uuid");
 
 // ================ SQL DATABASE =====================
 
-// install mysql2 using npm install mysql2, then creating my mysql variable 
-const mysql = require('mysql2');
+// install mysql2 using npm install mysql2, then create mysql variable 
+//const mysql = require('mysql2');
 
 // Create my connection to my DB
-const connection = mysql.createConnection({
+/* const connection = mysql.createConnection({
   host: 'localhost',
   port: 3306,
   user: 'elk',
@@ -26,10 +26,10 @@ connection.connect((err) => {
   console.log('✅ Connected to MySQL on port 3306');
 });
 
-connection.query('SELECT * FROM `info_currentp1` WHERE platform="cat4507rpluse"', (error, results) => {
+const myquery = connection.query('SELECT * FROM `info_currentp1` WHERE platform="cat4507rpluse"', (error, results) => {
   if (error) throw error;
   console.log(results);
-});
+}); */
 
 // ============== END ================================
 
@@ -79,6 +79,7 @@ app.post("/data", (req, res) => {
   const newData = { id: uuidv4(), ...req.body };
   const currentData = readData();
   currentData.push(newData);
+
   writeData(currentData);
   res.json({ message: "Data saved successfully", data: newData });
 });
@@ -96,25 +97,23 @@ app.get("/data/:id", (req, res) => {
 // TODO: Handle PUT request to update data by ID
 app.put("/data/:id", (req, res) => {
   const data = readData();
-  const item = data.findIndex((item) => item.id === req.params.id);
+  const index = data.findIndex((item) => item.id === req.params.id);
   if (index === -1) {
     return res.status(404).json({ message: "Data not found" });
   }
-
   data[index] = { ...data[index], ...req.body};
   writeData(data);
   res.json({ message: "Data saved successfully", data: data[index] });
 });
 
 // TODO: Handle DELETE request to retrieve data by ID
-app.delete("/data/:id", (req, res) => {
-  const data = readData();
-  const item = data.findIndex((item) => item.id === req.params.id);
-  if (!item) {
+app.delete("/data/:id", (req, res) => { //defines an endpoint where browser/postnam can send a DELETE request to /data/{id}.
+  const data = readData();              // Loads data from 
+  const index = data.findIndex((item) => item.id === req.params.id);
+  if (index === -1) {
     return res.status(404).json({ message: "Data not found" });
   }
-
-  data.splce(index, 1);
+  data.splice(index, 1);
   writeData(data);
   res.json({message: "Data deleted successfully"});
 });
@@ -139,6 +138,20 @@ app.listen(PORT, () => {
 
 // =================== ADD ROOT To DB =====================
 // Adding my get route to extract data from the DB
+
+// Route to fetch data
+/* app.get('/items', (req, res) => {
+  
+  db.query(myquery, (err, results) => {
+    if (err) {
+      res.status(500).json({ error: 'Failed to fetch data' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+
 app.get('/elk', async (req, res) => {
   const platform = req.query.platform;
 
@@ -157,7 +170,7 @@ app.get('/elk', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
+ */
 // ========================================================
 
 
