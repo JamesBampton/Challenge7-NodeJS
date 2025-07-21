@@ -31,11 +31,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const li = document.createElement("li");
         li.textContent = item.id + ": " + JSON.stringify(item);
-      
-      
+                  
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.checked = item.checked || false; // Use backend value if it exists
+      checkbox.id = item.id;
 
       li.appendChild(checkbox); // Append checkbox to list item
       dataList.appendChild(li); // Now append list item
@@ -68,6 +68,29 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error adding data:", error);
     }
   });
+
+    // Handle form submission to ADD new data
+/*   dataForm.addEventListener("submit", async (event) => {
+    event.preventDefault(); // prevents relaod of page on form submit
+    const newData = { text: dataInput.value }; //Creates object of he new inputted data
+
+    try {
+      const response = await fetch("/data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newData),
+
+      });
+      console.log(response)
+
+      if (response.ok) {
+        dataInput.value = ""; // Clear input field
+        fetchData(); // Refresh the list
+      }
+    } catch (error) {
+      console.error("Error adding data:", error);
+    }
+  }); */
 
 
     // Handle form submission to EDIT data
