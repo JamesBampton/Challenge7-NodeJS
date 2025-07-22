@@ -1,11 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
+    if (window.hasInitialized) return;
+    window.hasInitialized = true;
   const dataList = document.getElementById("data-list");
   const dataForm = document.getElementById("dataForm");
   // const dataAdd = document.getElementById("add");
   const dataDelete = document.getElementById("delete");
   //const dataEdit = document.getElementById("edit");
   const dataInput = document.getElementById("data-input");
-
   // Function to fetch data from the backend
   const fetchData = async () => {
     try {
@@ -35,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error fetching data:", error);
     }
   };
+  fetchData();
 
   // Handle form submission to ADD new data
   dataForm.addEventListener("submit", async (event) => {
@@ -42,7 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
     dataForm.style.height = dataInput.scrollHeight + "px";
     event.preventDefault(); // prevents relaod of page on form submit
     const newData = { text: dataInput.value }; //Creates object of he new inputted data
-
+    console.log("So this is the new data hey? ", newData)
+    
     try {
       const response = await fetch("/data", {
         method: "POST",
@@ -85,10 +88,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Handle form submission to DELETE data
   dataDelete.addEventListener("click", async (event) => {
   event.preventDefault();
-  const selectRadio = dataList.querySelectorAll("input[type='radio']:checked");
+  const selectRadio = dataList.querySelector("input[type='radio']:checked");
   
-  const idToDelete = selectRadio.dataset.id;
-
+  const idToDelete = selectRadio.value;
+console.log (idToDelete)
   // Sending a delete call to backend/json-file
     try {
       await fetch(`/data/${idToDelete}`,
