@@ -79,3 +79,10 @@ textarea {
 #edit {
   background: orange;
 }
+
+#editButton {
+  height: 40px;
+  background: #28a745;
+  color: white;
+  margin: 11px;
+}
