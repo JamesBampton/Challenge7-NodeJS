@@ -15,20 +15,15 @@
 
 </head>
 
-<script>
-
-
-</script>
-
 <body>
     <div class="container">
         <h1>Quick Notes</h1>
         <ul id="data-list"></ul>
         <form id="dataForm">
-            <input type="text" id="data-input" placeholder="Enter new data" required>
+            <textarea id="data-input" placeholder="Enter new note" required rows="4" cols="50"></textarea>
             <button id="add" type="submit">ADD</button>
-            <button id="edit">DELETE</button>
-            <button id="delete">EDIT</button>
+            <button id="delete" type="button">DELETE</button>
+            <button id="edit" type="button">EDIT</button>
         </form>
     </div>
     <script src="script.js"></script>

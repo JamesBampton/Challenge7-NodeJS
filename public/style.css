@@ -54,3 +54,8 @@ button {
 button:hover {
   background: #218838;
 }
+
+div li {
+  white-space: pre-line;
+  color: red;
+}
