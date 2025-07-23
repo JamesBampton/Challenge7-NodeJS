@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const dataEdit = document.getElementById("edit");
   const dataInput = document.getElementById("data-input");
   document.getElementById('updateButton').addEventListener('click', onClickupdateButton);
+  
   //  ================ FETCH DATA FUNCTION ===============================
   // Function to fetch data from the backend
   const fetchData = async () => {
