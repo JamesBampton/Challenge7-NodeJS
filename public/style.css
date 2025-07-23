@@ -86,3 +86,8 @@ textarea {
   color: white;
   margin: 11px;
 }
+
+#updateButton {
+  background-color: black;
+  margin: 20px;
+}
