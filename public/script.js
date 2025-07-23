@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const dataDelete = document.getElementById("delete");
   const dataEdit = document.getElementById("edit");
   const dataInput = document.getElementById("data-input");
+  document.getElementById('updateButton').addEventListener('click', onClickupdateButton);
+  //  ================ FETCH DATA FUNCTION ===============================
   // Function to fetch data from the backend
   const fetchData = async () => {
     try {
@@ -36,8 +38,13 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error fetching data:", error);
     }
   };
-  fetchData();
+
+  //  ======================== END FETCH DATA  ==================
+
+  //fetchData();
   editFunction();
+
+  //  =================== ADD NOTE ==============================
 
   // Handle form submission to ADD new data
   dataForm.addEventListener("submit", async (event) => {
@@ -65,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // ================= DELETE NOTE =========================
   // Handle form submission to DELETE data
   dataDelete.addEventListener("click", async (event) => {
   event.preventDefault();
@@ -84,19 +92,14 @@ console.log (idToDelete)
   // Fetch data on page load to show updated, deleted values
   fetchData();
   });
-});
+//  ==============END DELTE NOTE  =========================
+fetchData();
 
-// EDIT MODAL 
-
- //Edit Modal
-  /*       document.getElementById('edit').addEventListener('click', function () {
-            const modalElement = document.getElementById('editModal');
-            const modalInstance = new bootstrap.Modal(modalElement);
-            modalInstance.show();
-        });
-        fetchData(); */
+ });
 
 
+
+// ====================  NOTE EDIT "EDIT" ==============================
     function editFunction() {
         document.getElementById('edit').addEventListener('click', function () {
     const selectedRadio = document.querySelector('#data-list input[type="radio"]:checked');
@@ -120,8 +123,10 @@ console.log (idToDelete)
 });
     }
 
-  // Handle form submission to EDIT data
-async function onClickaddButton() {
+//====================  MODAL EDIT UPDATE ======================
+
+  // Handle form update after EDIT
+async function onClickupdateButton() {
     const modal = document.getElementById('editModal');
     const updatedText = document.getElementById('task').value;
     const selectedId = modal.dataset.selectedId;
@@ -138,8 +143,16 @@ async function onClickaddButton() {
             body: JSON.stringify({ text: updatedText })
         });
 
-        if (response.ok) {
-            fetchData(); // Refresh list then close the modal as below.
+        if (response.ok) { // Update the DOM with changes, and reload only the selected text content
+            const radio = document.querySelector(`input[type="radio"][value="${selectedId}"]`);
+      if (radio) {
+        const listItem = radio.parentElement;
+        const textDiv = listItem.querySelector("div");
+        if (textDiv) {
+          textDiv.textContent = updatedText;
+        }
+      }
+
             const modalInstance = bootstrap.Modal.getInstance(modal);
             modalInstance.hide(); // Close modal after fetch data, else the dat will not be fetched, remove the modal close on the button
         } else {
@@ -148,6 +161,8 @@ async function onClickaddButton() {
     } catch (error) {
         console.error("Error updating note:", error);
     }
-}
-
+  
+  }
+//  ============= END UPDATE  =======================
+  
 
