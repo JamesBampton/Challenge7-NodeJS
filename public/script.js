@@ -1,26 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
+    if (window.hasInitialized) return;
+    window.hasInitialized = true;
   const dataList = document.getElementById("data-list");
-  //const dataForm = document.getElementById("data-form");
-  const dataAdd = document.getElementById("add");
+  const dataForm = document.getElementById("dataForm");
+  // const dataAdd = document.getElementById("add");
+  const dataDelete = document.getElementById("delete");
+  const dataEdit = document.getElementById("edit");
   const dataInput = document.getElementById("data-input");
-
-  // Function to fetch data from the backend Original 
-  // const fetchData = async () => {
-  //   try {
-  //     const response = await fetch("/data");
-  //     const data = await response.json();
-  //     dataList.innerHTML = ""; // Clear the list before rendering
-  //     data.forEach((item) => {
-  //       const li = document.createElement("li");
-  //       li.textContent = item.id + ": " + JSON.stringify(item);
-  //       dataList.appendChild(li);
-  //     });
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-
-    // Function to fetch data from the backend
+  document.getElementById('updateButton').addEventListener('click', onClickupdateButton);
+  //  ================ FETCH DATA FUNCTION ===============================
+  // Function to fetch data from the backend
   const fetchData = async () => {
     try {
       const response = await fetch("/data");
@@ -30,14 +19,18 @@ document.addEventListener("DOMContentLoaded", () => {
       data.forEach((item) => {
 
         const li = document.createElement("li");
-        li.textContent = item.id + ": " + JSON.stringify(item);
-      
-      
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.checked = item.checked || false; // Use backend value if it exists
+        //li.textContent = item.id + ": " + JSON.stringify(item); // Shows the JSON string, not needed as I place the 'text' only into a div below
+        const textDiv = document.createElement("div");
+        textDiv.textContent =item.text;
+        textDiv.style.whiteSpace = "pre-line";
+        li.appendChild(textDiv);
 
-      li.appendChild(checkbox); // Append checkbox to list item
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = "selected-item" // Set name so all share same name, so only one will be selected
+      radio.value = item.id;
+
+      li.appendChild(radio); // Append checkbox to list item
       dataList.appendChild(li); // Now append list item
       
     });
@@ -46,11 +39,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  //  ======================== END FETCH DATA  ==================
+
+  //fetchData();
+  editFunction();
+
+  //  =================== ADD NOTE ==============================
+
   // Handle form submission to ADD new data
   dataForm.addEventListener("submit", async (event) => {
+    dataForm.style.height ="auto";
+    dataForm.style.height = dataInput.scrollHeight + "px";
     event.preventDefault(); // prevents relaod of page on form submit
     const newData = { text: dataInput.value }; //Creates object of he new inputted data
-
+    console.log("So this is the new data hey? ", newData)
+    
     try {
       const response = await fetch("/data", {
         method: "POST",
@@ -69,52 +72,97 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-
-    // Handle form submission to EDIT data
-  dataAdd.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const newData = { text: dataInput.value };
-
-    try {
-      const response = await fetch("/data", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newData),
-      });
-
-      if (response.ok) {
-        dataInput.value = ""; // Clear input field
-        fetchData(); // Refresh the list
-      }
-    } catch (error) {
-      console.error("Error adding data:", error);
-    }
-  });
-
-
-    // Handle form submission to DELETE data
-  dataAdd.addEventListener("submit", async (event) => {
+  // ================= DELETE NOTE =========================
+  // Handle form submission to DELETE data
+  dataDelete.addEventListener("click", async (event) => {
   event.preventDefault();
-  const newData = { text: dataInput.value.trim() };
-  if (!newData) return;
-
-  // Sending data to backend/json-file
+  const selectRadio = dataList.querySelector("input[type='radio']:checked");
+  
+  const idToDelete = selectRadio.value;
+console.log (idToDelete)
+  // Sending a delete call to backend/json-file
     try {
-      const response = await fetch("/data", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newData),
+      await fetch(`/data/${idToDelete}`,
+      { 
+        method: "delete",
       });
-
-      if (response.ok) {
-        dataInput.value = ""; // Clear input field
-        fetchData(); // Refresh the list
-      }
     } catch (error) {
-      console.error("Error adding data:", error);
+      console.error(`Failed to delete requested ID ${idToDelete}:`, error);
     }
-  });
-
-  // Fetch data on page load
+  // Fetch data on page load to show updated, deleted values
   fetchData();
+  });
+//  ==============END DELTE NOTE  =========================
+fetchData();
+
+ });
+
+
+
+// ====================  NOTE EDIT "EDIT" ==============================
+    function editFunction() {
+        document.getElementById('edit').addEventListener('click', function () {
+    const selectedRadio = document.querySelector('#data-list input[type="radio"]:checked');
+    if (!selectedRadio) {
+        alert("Please select a note to edit.");
+        return;
+    }
+
+    const listItem = selectedRadio.parentElement;
+    const currentText = listItem.querySelector('div').textContent.trim();
+
+    // Set modal input value
+    document.getElementById('task').value = currentText;
+
+    // Store selected ID for later use
+    document.getElementById('editModal').dataset.selectedId = selectedRadio.value;
+
+    // Show modal
+    const modalInstance = new bootstrap.Modal(document.getElementById('editModal'));
+    modalInstance.show();
 });
+    }
+
+//====================  MODAL EDIT UPDATE ======================
+
+  // Handle form update after EDIT
+async function onClickupdateButton() {
+    const modal = document.getElementById('editModal');
+    const updatedText = document.getElementById('task').value;
+    const selectedId = modal.dataset.selectedId;
+
+    if (!updatedText.trim()) {
+        alert("Please enter valid text.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/data/${selectedId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: updatedText })
+        });
+
+        if (response.ok) { // Update the DOM with changes, and reload only the selected text content
+            const radio = document.querySelector(`input[type="radio"][value="${selectedId}"]`);
+      if (radio) {
+        const listItem = radio.parentElement;
+        const textDiv = listItem.querySelector("div");
+        if (textDiv) {
+          textDiv.textContent = updatedText;
+        }
+      }
+
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            modalInstance.hide(); // Close modal after fetch data, else the dat will not be fetched, remove the modal close on the button
+        } else {
+            console.error("Failed to update note.");
+        }
+    } catch (error) {
+        console.error("Error updating note:", error);
+    }
+  
+  }
+//  ============= END UPDATE  =======================
+  
+

@@ -75,13 +75,33 @@ app.get("/data", (req, res) => {
 });
 
 // Handle POST request to save new data with a unique ID
-app.post("/data", (req, res) => {
+/* app.post("/data", (req, res) => {
   const newData = { id: uuidv4(), ...req.body };
   const currentData = readData();
   currentData.push(newData);
 
   writeData(currentData);
   res.json({ message: "Data saved successfully", data: newData });
+}); */
+
+app.post("/data", (req, res) => {
+  const newText = req.body.text?.trim();
+  if (!newText) {
+    return res.status(400).json({ message: "Text is required" });
+  }
+
+  const currentData = readData();
+  
+  const isDuplicate = currentData.some(item => item.text.trim() === newText);
+  if (isDuplicate) {
+    return res.status(409).json({ message: "Duplicate entry" });
+  }
+
+  const newData = { id: uuidv4(), text: newText };
+  currentData.push(newData);
+  writeData(currentData);
+
+  res.status(201).json({ message: "Data saved successfully", data: newData });
 });
 
 // Handle GET request to retrieve data by ID
