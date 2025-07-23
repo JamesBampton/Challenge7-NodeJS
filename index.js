@@ -14,7 +14,7 @@ const { v4: uuidv4 } = require("uuid");
   host: 'localhost',
   port: 3306,
   user: 'elk',
-  password: 'd0ughnut*',
+  password: 'd0.......',
   database: 'elk_sizing'
 
 })
@@ -43,7 +43,7 @@ const PORT = 3011;
 // Middleware to parse incoming JSON requests
 app.use(express.json());
 
-// TODO:  Serve static files from the 'public' directory
+// Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "public")));
 
 // Define the path to the JSON file
@@ -63,7 +63,7 @@ const writeData = (data) => {
   fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
 };
 
-// TODO: Handle GET request at the root route
+// Handle GET request at the root route
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.htm"));
 });
@@ -126,7 +126,7 @@ app.put("/data/:id", (req, res) => {
   res.json({ message: "Data saved successfully", data: data[index] });
 });
 
-// TODO: Handle DELETE request to retrieve data by ID
+// Handle DELETE request to retrieve data by ID
 app.delete("/data/:id", (req, res) => { //defines an endpoint where browser/postnam can send a DELETE request to /data/{id}.
   const data = readData();              // Loads data from 
   const index = data.findIndex((item) => item.id === req.params.id);
